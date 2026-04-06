@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RH Learning Assistant Settings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 320px;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      font-size: 14px;
+      color: #151515;
+      background: #ffffff;
+    }
+
+    .popup-header {
+      background: #ee0000;
+      color: #ffffff;
+      padding: 16px;
+    }
+
+    .popup-header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .popup-header h1 svg {
+      flex-shrink: 0;
+    }
+
+    .popup-content {
+      padding: 16px;
+    }
+
+    .setting-group {
+      margin-bottom: 16px;
+    }
+
+    .setting-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6a6e73;
+    }
+
+    .setting-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d2d2d2;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: inherit;
+      transition: border-color 0.2s ease;
+    }
+
+    .setting-group input:focus {
+      outline: none;
+      border-color: #ee0000;
+      box-shadow: 0 0 0 2px rgba(238, 0, 0, 0.1);
+    }
+
+    .setting-group .hint {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #6a6e73;
+    }
+
+    .setting-group .hint a {
+      color: #ee0000;
+      text-decoration: none;
+    }
+
+    .setting-group .hint a:hover {
+      text-decoration: underline;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #ee0000;
+      color: #ffffff;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #cc0000;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #6a6e73;
+      border: 1px solid #d2d2d2;
+    }
+
+    .btn-secondary:hover {
+      background: #f5f5f5;
+      color: #151515;
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: #c9190b;
+      border: 1px solid #c9190b;
+    }
+
+    .btn-danger:hover {
+      background: #c9190b;
+      color: #ffffff;
+    }
+
+    .status {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .status.success {
+      display: block;
+      background: #e7f5e3;
+      color: #3e8635;
+      border: 1px solid #3e8635;
+    }
+
+    .status.error {
+      display: block;
+      background: #fce8e6;
+      color: #c9190b;
+      border: 1px solid #c9190b;
+    }
+
+    .status.info {
+      display: block;
+      background: #e7f1fa;
+      color: #06c;
+      border: 1px solid #06c;
+    }
+
+    .divider {
+      height: 1px;
+      background: #d2d2d2;
+      margin: 16px 0;
+    }
+
+    .api-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #f5f5f5;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    .api-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .api-status-dot.configured {
+      background: #3e8635;
+    }
+
+    .api-status-dot.not-configured {
+      background: #f0ab00;
+    }
+
+    .api-status-text {
+      font-size: 13px;
+    }
+
+    .footer {
+      padding: 12px 16px;
+      background: #f5f5f5;
+      border-top: 1px solid #d2d2d2;
+      font-size: 12px;
+      color: #6a6e73;
+      text-align: center;
+    }
+
+    .footer a {
+      color: #ee0000;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="popup-header">
+    <h1>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+      </svg>
+      RH Learning Assistant
+    </h1>
+  </div>
+
+  <div class="popup-content">
+    <div class="api-status" id="apiStatus">
+      <span class="api-status-dot not-configured" id="statusDot"></span>
+      <span class="api-status-text" id="statusText">API key not configured</span>
+    </div>
+
+    <div class="setting-group">
+      <label for="apiKey">Gemini API Key</label>
+      <input type="password" id="apiKey" placeholder="Enter your Gemini API key">
+      <p class="hint">
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Get a free API key</a>
+      </p>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" id="saveBtn">Save Key</button>
+      <button class="btn btn-secondary" id="showBtn">Show</button>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <div class="divider"></div>
+
+    <div class="btn-group">
+      <button class="btn btn-danger" id="clearBtn">Clear Saved Key</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    Works only on <a href="https://role.rhu.redhat.com" target="_blank" rel="noopener">role.rhu.redhat.com</a>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
