@@ -1,0 +1,316 @@
+/**
+ * RH Learning Assistant - Styles
+ */
+
+/* ============================================
+   CSS Variables
+   ============================================ */
+:root {
+  --rh-summarizer-primary: #ee0000;
+  --rh-summarizer-primary-hover: #cc0000;
+  --rh-summarizer-bg: #ffffff;
+  --rh-summarizer-text: #151515;
+  --rh-summarizer-text-muted: #6a6e73;
+  --rh-summarizer-border: #d2d2d2;
+  --rh-summarizer-shadow: rgba(0, 0, 0, 0.16);
+  --rh-summarizer-backdrop: rgba(0, 0, 0, 0.5);
+  --rh-summarizer-code-bg: #f5f5f5;
+  --rh-summarizer-success: #3e8635;
+  --rh-summarizer-error: #c9190b;
+  --rh-summarizer-radius: 6px;
+}
+
+/* ============================================
+   Summarize Button
+   ============================================ */
+.rh-summarizer-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999999;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--rh-summarizer-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--rh-summarizer-radius);
+  font-family: 'Red Hat Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--rh-summarizer-shadow);
+  transition: all 0.2s ease;
+}
+
+.rh-summarizer-btn:hover:not(:disabled) {
+  background: var(--rh-summarizer-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--rh-summarizer-shadow);
+}
+
+.rh-summarizer-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.rh-summarizer-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.rh-summarizer-btn.processing {
+  background: var(--rh-summarizer-text-muted);
+}
+
+.rh-summarizer-btn.ready {
+  animation: rh-pulse 2s ease-in-out infinite;
+}
+
+.rh-summarizer-btn svg {
+  flex-shrink: 0;
+}
+
+@keyframes rh-pulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px var(--rh-summarizer-shadow);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(238, 0, 0, 0.4);
+  }
+}
+
+/* ============================================
+   Modal Base
+   ============================================ */
+.rh-summarizer-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.rh-summarizer-modal.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.rh-summarizer-modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--rh-summarizer-backdrop);
+}
+
+.rh-summarizer-modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 700px;
+  max-height: 85vh;
+  background: var(--rh-summarizer-bg);
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.95) translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.rh-summarizer-modal.visible .rh-summarizer-modal-content {
+  transform: scale(1) translateY(0);
+}
+
+.rh-summarizer-apikey-content {
+  max-width: 480px;
+}
+
+/* ============================================
+   Modal Header
+   ============================================ */
+.rh-summarizer-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--rh-summarizer-border);
+}
+
+.rh-summarizer-modal-header h2 {
+  margin: 0;
+  font-family: 'Red Hat Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--rh-summarizer-text);
+}
+
+.rh-summarizer-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  font-size: 24px;
+  color: var(--rh-summarizer-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rh-summarizer-modal-close:hover {
+  background: var(--rh-summarizer-code-bg);
+  color: var(--rh-summarizer-text);
+}
+
+/* ============================================
+   Modal Body
+   ============================================ */
+.rh-summarizer-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+/* Loading State */
+.rh-summarizer-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.rh-summarizer-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--rh-summarizer-border);
+  border-top-color: var(--rh-summarizer-primary);
+  border-radius: 50%;
+  animation: rh-spin 0.8s linear infinite;
+}
+
+@keyframes rh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rh-summarizer-loading p {
+  margin-top: 16px;
+  color: var(--rh-summarizer-text-muted);
+  font-size: 14px;
+}
+
+/* Error State */
+.rh-summarizer-error {
+  text-align: center;
+  padding: 24px;
+}
+
+.rh-summarizer-error-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.rh-summarizer-error p {
+  color: var(--rh-summarizer-error);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Result Content */
+.rh-summarizer-result {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--rh-summarizer-text);
+}
+
+.rh-summarizer-result h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--rh-summarizer-primary);
+  color: var(--rh-summarizer-text);
+}
+
+.rh-summarizer-result h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 24px 0 12px 0;
+  color: var(--rh-summarizer-text);
+}
+
+.rh-summarizer-result h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 20px 0 10px 0;
+  color: var(--rh-summarizer-text);
+}
+
+.rh-summarizer-result p {
+  margin: 0 0 12px 0;
+}
+
+.rh-summarizer-result ul,
+.rh-summarizer-result ol {
+  margin: 0 0 16px 0;
+  padding-left: 24px;
+}
+
+.rh-summarizer-result li {
+  margin-bottom: 8px;
+}
+
+.rh-summarizer-result code {
+  background: var(--rh-summarizer-code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  font-size: 13px;
+}
+
+.rh-summarizer-result pre {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  padding: 16px;
+  border-radius: var(--rh-summarizer-radius);
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.rh-summarizer-result pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.rh-summarizer-result hr {
+  border: none;
+  border-top: 1px solid var(--rh-summarizer-border);
+  margin: 24px 0;
+}
+
+.rh-summarizer-result strong {
+  font-weight: 600;
+  color: var(--rh-summarizer-text);
+}
+
+.rh-summarizer-result em {
+  font-style: italic;
+}
